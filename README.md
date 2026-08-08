@@ -1,16 +1,43 @@
-# React + Vite
+# HAZY
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+I build things because I want to know how they work.
 
-Currently, two official plugins are available:
+Systems, software, hardware, experiments, and occasionally things that probably shouldn't exist.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![Scroll Demo](assets/demo.webp)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### The Architecture
+This is a generative digital art piece, not a web template. 
 
-## Expanding the Oxlint configuration
+It is powered by a custom `Three.js` particle engine rendering 5,000 nodes that physically travel through 3D space to form new mathematical structures based strictly on scroll velocity. 
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+There is no glassmorphism. No glowing borders. Pure typography and math.
+
+### The 7 States
+The narrative transitions continuously through seven states:
+1. **Identity** → Fluid Spherical Cloud
+2. **Projects** → Rigid 3D Matrix
+3. **Build** → Collapsing Scaffold
+4. **Systems** → Orbiting Clusters
+5. **Break** → Chaotic Field Explosion
+6. **Learn** → Mathematical Torus
+7. **Next** → Accelerating Galaxy
+
+---
+
+### Local Build
+
+To run the simulation locally:
+
+```bash
+# Clone the repository
+git clone https://github.com/hazynyx/hazynyx.xyz-profile-src.git
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
