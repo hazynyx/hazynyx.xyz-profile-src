@@ -4,6 +4,7 @@ import HomeSection from './sections/HomeSection';
 import ProjectsSection from './sections/ProjectsSection';
 import SkillsSection from './sections/SkillsSection';
 import AboutSection from './sections/AboutSection';
+import ParticleBackground from './components/ParticleBackground';
 import { motion } from 'framer-motion';
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
 
   return (
     <div className="app-container">
+      <ParticleBackground />
       <div className="noise-overlay"></div>
       
       {/* Custom Cursor */}
