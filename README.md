@@ -41,3 +41,11 @@ npm install
 # Start the development server
 npm run dev
 ```
+
+---
+
+### Usage & Forking
+Feel free to fork this, rip out the particles, break the math, or steal the architecture to build your own thing. That's how we learn.
+
+### License
+[MIT License](LICENSE) &copy; Ayush Gupta (Hazy).
