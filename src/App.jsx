@@ -1,7 +1,11 @@
 import React from 'react';
 import HomeSection from './sections/HomeSection';
 import ProjectsSection from './sections/ProjectsSection';
-import AboutSection from './sections/AboutSection';
+import BuildSection from './sections/BuildSection';
+import SystemsSection from './sections/SystemsSection';
+import BreakSection from './sections/BreakSection';
+import LearnSection from './sections/LearnSection';
+import NextSection from './sections/NextSection';
 import ParticleBackground from './components/ParticleBackground';
 
 function App() {
@@ -10,7 +14,11 @@ function App() {
       <ParticleBackground />
       <HomeSection />
       <ProjectsSection />
-      <AboutSection />
+      <BuildSection />
+      <SystemsSection />
+      <BreakSection />
+      <LearnSection />
+      <NextSection />
     </div>
   );
 }
