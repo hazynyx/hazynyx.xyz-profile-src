@@ -17,6 +17,9 @@ const ParticleBackground = () => {
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.style.display = 'block';
+    renderer.domElement.style.width = '100vw';
+    renderer.domElement.style.height = '100vh';
     mountRef.current.appendChild(renderer.domElement);
 
     const particleCount = 4000;
@@ -88,18 +91,12 @@ const ParticleBackground = () => {
     // Interaction vars
     let mouseX = 0;
     let mouseY = 0;
-    let scrollPercent = 0;
     
     const camTarget = new THREE.Vector3(0, 0, 600);
 
     const onMouseMove = (e) => {
       mouseX = (e.clientX / w - 0.5) * 2;
       mouseY = (e.clientY / h - 0.5) * 2;
-    };
-
-    const onScroll = () => {
-      const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
-      scrollPercent = Math.min(Math.max(window.scrollY / docHeight, 0), 1);
     };
 
     const onResize = () => {
@@ -109,7 +106,6 @@ const ParticleBackground = () => {
     };
 
     window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize);
 
     const clock = new THREE.Clock();
@@ -117,6 +113,10 @@ const ParticleBackground = () => {
     const animate = () => {
       requestAnimationFrame(animate);
       const time = clock.getElapsedTime();
+
+      // Dynamically calculate scroll to fix initial load bugs and dynamic height changes
+      const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
+      const scrollPercent = Math.min(Math.max(window.scrollY / docHeight, 0), 1);
 
       const posAttribute = geometry.attributes.position;
       const posArray = posAttribute.array;
@@ -203,7 +203,6 @@ const ParticleBackground = () => {
 
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onResize);
       if (mountRef.current) {
         mountRef.current.removeChild(renderer.domElement);
@@ -220,8 +219,8 @@ const ParticleBackground = () => {
         position: 'fixed',
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100%',
+        width: '100vw',
+        height: '100vh',
         zIndex: 0,
         pointerEvents: 'none'
       }}
