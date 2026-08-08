@@ -52,7 +52,7 @@ const NextSection = () => {
           <a href="#projects" className="link-minimal" style={{ fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>
             PROJECTS
           </a>
-          <a href="mailto:hazynyx@gmail.com" className="link-minimal" style={{ fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>
+          <a href="/contact" className="link-minimal" style={{ fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>
             CONTACT
           </a>
         </div>

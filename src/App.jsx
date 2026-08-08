@@ -8,7 +8,13 @@ import LearnSection from './sections/LearnSection';
 import NextSection from './sections/NextSection';
 import ParticleBackground from './components/ParticleBackground';
 
+import ContactPage from './pages/ContactPage';
+
 function App() {
+  if (window.location.pathname === '/contact') {
+    return <ContactPage />;
+  }
+
   return (
     <div className="app-container">
       <ParticleBackground />
