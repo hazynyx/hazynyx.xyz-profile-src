@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --bg-color: #000000;
+  --bg-color: #030303;
   --text-primary: #ffffff;
-  --text-secondary: #a0a0a0;
-  --accent-glow: rgba(0, 150, 255, 0.4);
-  --border-glow: 0 0 15px var(--accent-glow), inset 0 0 15px var(--accent-glow);
+  --text-secondary: #888888;
+  --accent-glow: rgba(0, 115, 255, 0.5);
+  --accent-glow-strong: rgba(0, 150, 255, 0.8);
+  --border-glow: 0 0 20px var(--accent-glow), inset 0 0 15px var(--accent-glow);
   --font-heading: 'Oxanium', sans-serif;
   --font-body: 'Inter', sans-serif;
 }
@@ -14,6 +15,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  cursor: none !important; /* Custom cursor everywhere */
 }
 
 body {
@@ -26,60 +28,107 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  margin-bottom: 1rem;
+/* Background Noise */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
 }
 
-a {
-  color: inherit;
+/* Custom Cursor */
+.custom-cursor {
+  position: fixed;
+  top: 0; left: 0;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  transition: width 0.2s, height 0.2s, background-color 0.2s;
+}
+
+.custom-cursor.hovering {
+  width: 60px;
+  height: 60px;
+  background: var(--accent-glow-strong);
+  filter: blur(5px);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+a, button {
   text-decoration: none;
+  color: inherit;
+}
+
+/* Scroll Container */
+.app-container {
+  scroll-behavior: smooth;
+}
+
+section {
+  min-height: 100vh;
+  padding: 100px 2rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Glowing Container Utility */
 .glowing-container {
-  border: 1px solid rgba(0, 150, 255, 0.2);
-  border-radius: 20px;
-  box-shadow: var(--border-glow);
-  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 150, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(10, 10, 15, 0.6);
   backdrop-filter: blur(10px);
   padding: 2rem;
-  transition: box-shadow 0.3s ease;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.glowing-container::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 2px;
+  background: linear-gradient(90deg, transparent, #0096ff, transparent);
+  transition: all 0.5s ease;
+}
+
+.glowing-container:hover::before {
+  left: 100%;
+  transition: left 0.8s ease;
 }
 
 .glowing-container:hover {
-  box-shadow: 0 0 25px rgba(0, 150, 255, 0.6), inset 0 0 20px rgba(0, 150, 255, 0.5);
+  box-shadow: var(--border-glow);
+  transform: translateY(-5px);
 }
 
-/* Scroll snap utilities */
-.scroll-container {
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-}
-
-.scroll-section {
-  height: 100vh;
-  scroll-snap-align: start;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-/* Hide scrollbar for cleaner look */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-color);
+  background: #000;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 4px;
+  background: #333;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.4);
+  background: #0096ff;
 }
