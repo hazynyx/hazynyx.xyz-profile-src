@@ -1,13 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap');
 
 :root {
-  --bg-color: #030303;
+  --bg-color: #000000;
   --text-primary: #ffffff;
-  --text-secondary: #888888;
-  --accent-glow: rgba(0, 115, 255, 0.5);
-  --accent-glow-strong: rgba(0, 150, 255, 0.8);
-  --border-glow: 0 0 20px var(--accent-glow), inset 0 0 15px var(--accent-glow);
-  --font-heading: 'Oxanium', sans-serif;
+  --text-secondary: #666666;
   --font-body: 'Inter', sans-serif;
 }
 
@@ -15,120 +11,65 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  cursor: none !important; /* Custom cursor everywhere */
 }
 
 body {
   background-color: var(--bg-color);
   color: var(--text-primary);
   font-family: var(--font-body);
-  line-height: 1.6;
+  line-height: 1.4;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Background Noise */
-.noise-overlay {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.04;
-  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
-}
-
-/* Custom Cursor */
-.custom-cursor {
-  position: fixed;
-  top: 0; left: 0;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 10000;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: difference;
-  transition: width 0.2s, height 0.2s, background-color 0.2s;
-}
-
-.custom-cursor.hovering {
-  width: 60px;
-  height: 60px;
-  background: var(--accent-glow-strong);
-  filter: blur(5px);
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+/* Hide scrollbar for immersion */
+::-webkit-scrollbar {
+  display: none;
 }
 
 a, button {
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 
-/* Scroll Container */
 .app-container {
-  scroll-behavior: smooth;
+  position: relative;
+  width: 100%;
 }
 
 section {
   min-height: 100vh;
-  padding: 100px 2rem 2rem 2rem;
+  width: 100%;
+  position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
-  max-width: 1200px;
+}
+
+.content-wrapper {
+  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
+  padding: 4rem 2rem;
 }
 
-/* Glowing Container Utility */
-.glowing-container {
-  border: 1px solid rgba(0, 150, 255, 0.3);
-  border-radius: 12px;
-  background: rgba(10, 10, 15, 0.6);
-  backdrop-filter: blur(10px);
-  padding: 2rem;
-  transition: all 0.4s ease;
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+/* Minimal text links */
+.link-minimal {
   position: relative;
-  overflow: hidden;
+  display: inline-block;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
 }
 
-.glowing-container::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 2px;
-  background: linear-gradient(90deg, transparent, #0096ff, transparent);
-  transition: all 0.5s ease;
-}
-
-.glowing-container:hover::before {
-  left: 100%;
-  transition: left 0.8s ease;
-}
-
-.glowing-container:hover {
-  box-shadow: var(--border-glow);
-  transform: translateY(-5px);
-}
-
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #000;
-}
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #0096ff;
+.link-minimal:hover {
+  color: var(--text-primary);
 }

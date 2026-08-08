@@ -9,51 +9,77 @@ const ParticleBackground = () => {
     const h = window.innerHeight;
     
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000000, 0.001);
+    scene.fog = new THREE.FogExp2(0x000000, 0.0015);
 
-    const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 1000);
-    camera.position.z = 400;
+    const camera = new THREE.PerspectiveCamera(60, w / h, 1, 2000);
+    camera.position.z = 600;
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.setSize(w, h);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mountRef.current.appendChild(renderer.domElement);
 
-    // Particle Data
-    const particleCount = 3000;
+    const particleCount = 4000;
     const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const targetSphere = new Float32Array(particleCount * 3);
-    const targetCube = new Float32Array(particleCount * 3);
+    
+    // Arrays for different states
+    const currentPos = new Float32Array(particleCount * 3);
+    const cloudPos = new Float32Array(particleCount * 3);
+    const gridPos = new Float32Array(particleCount * 3);
+    const wavePos = new Float32Array(particleCount * 3);
+
+    // Generate formations
+    const gridSize = Math.ceil(Math.cbrt(particleCount));
+    const gridStep = 40;
+    const gridOffset = (gridSize * gridStep) / 2;
 
     for (let i = 0; i < particleCount; i++) {
-      // Random starting positions
-      positions[i * 3] = (Math.random() - 0.5) * 1000;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 1000;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 1000;
+      const idx = i * 3;
+      
+      // 1. Cloud (Spherical volume)
+      const u = Math.random();
+      const v = Math.random();
+      const theta = 2 * Math.PI * u;
+      const phi = Math.acos(2 * v - 1);
+      const r = 300 * Math.cbrt(Math.random());
+      
+      cloudPos[idx] = r * Math.sin(phi) * Math.cos(theta);
+      cloudPos[idx + 1] = r * Math.sin(phi) * Math.sin(theta);
+      cloudPos[idx + 2] = r * Math.cos(phi);
 
-      // Sphere targets (Fibonacci sphere)
-      const phi = Math.acos(-1 + (2 * i) / particleCount);
-      const theta = Math.sqrt(particleCount * Math.PI) * phi;
-      const r = 250;
-      targetSphere[i * 3] = r * Math.cos(theta) * Math.sin(phi);
-      targetSphere[i * 3 + 1] = r * Math.sin(theta) * Math.sin(phi);
-      targetSphere[i * 3 + 2] = r * Math.cos(phi);
+      // 2. Grid (3D Matrix - Systems/OS)
+      const gx = i % gridSize;
+      const gy = Math.floor((i / gridSize)) % gridSize;
+      const gz = Math.floor(i / (gridSize * gridSize));
+      
+      gridPos[idx] = (gx * gridStep) - gridOffset;
+      gridPos[idx + 1] = (gy * gridStep) - gridOffset;
+      gridPos[idx + 2] = (gz * gridStep) - gridOffset;
 
-      // Cube targets (randomly along the faces of a cube)
-      targetCube[i * 3] = (Math.random() - 0.5) * 400;
-      targetCube[i * 3 + 1] = (Math.random() - 0.5) * 400;
-      targetCube[i * 3 + 2] = (Math.random() - 0.5) * 400;
+      // 3. Wave (Twisted Ribbon - Abstract/Hardware)
+      const t = i / particleCount;
+      const angle = t * Math.PI * 20; 
+      const radius = 200 + Math.sin(t * Math.PI * 4) * 100;
+      
+      wavePos[idx] = Math.cos(angle) * radius;
+      wavePos[idx + 1] = (t - 0.5) * 1000;
+      wavePos[idx + 2] = Math.sin(angle) * radius;
+
+      // Initialize current to cloud
+      currentPos[idx] = cloudPos[idx];
+      currentPos[idx + 1] = cloudPos[idx + 1];
+      currentPos[idx + 2] = cloudPos[idx + 2];
     }
 
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('position', new THREE.BufferAttribute(currentPos, 3));
 
     const material = new THREE.PointsMaterial({
-      color: 0x0096ff,
-      size: 3,
+      color: 0xffffff,
+      size: 1.5,
       transparent: true,
       opacity: 0.8,
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
     });
 
     const particles = new THREE.Points(geometry, material);
@@ -62,15 +88,18 @@ const ParticleBackground = () => {
     // Interaction vars
     let mouseX = 0;
     let mouseY = 0;
-    let scrollY = 0;
+    let scrollPercent = 0;
+    
+    const camTarget = new THREE.Vector3(0, 0, 600);
 
     const onMouseMove = (e) => {
-      mouseX = (e.clientX - w / 2) * 0.1;
-      mouseY = (e.clientY - h / 2) * 0.1;
+      mouseX = (e.clientX / w - 0.5) * 2;
+      mouseY = (e.clientY / h - 0.5) * 2;
     };
 
     const onScroll = () => {
-      scrollY = window.scrollY;
+      const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
+      scrollPercent = Math.min(Math.max(window.scrollY / docHeight, 0), 1);
     };
 
     const onResize = () => {
@@ -83,16 +112,11 @@ const ParticleBackground = () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize);
 
-    // Animation Loop
     const clock = new THREE.Clock();
 
     const animate = () => {
       requestAnimationFrame(animate);
       const time = clock.getElapsedTime();
-
-      // Determine blend factor based on scroll
-      const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
-      const scrollPercent = Math.min(Math.max(scrollY / docHeight, 0), 1); // 0 to 1
 
       const posAttribute = geometry.attributes.position;
       const posArray = posAttribute.array;
@@ -100,29 +124,77 @@ const ParticleBackground = () => {
       for (let i = 0; i < particleCount; i++) {
         const idx = i * 3;
         
-        // Target shape blending
-        const tx = THREE.MathUtils.lerp(targetSphere[idx], targetCube[idx], scrollPercent);
-        const ty = THREE.MathUtils.lerp(targetSphere[idx+1], targetCube[idx+1], scrollPercent);
-        const tz = THREE.MathUtils.lerp(targetSphere[idx+2], targetCube[idx+2], scrollPercent);
+        let tx, ty, tz;
+        
+        if (scrollPercent < 0.3) {
+          // Mostly Cloud, start transitioning to Grid
+          const progress = Math.max(0, (scrollPercent - 0.15) * (1 / 0.15)); // 0 to 1 between 0.15 and 0.3
+          tx = THREE.MathUtils.lerp(cloudPos[idx], gridPos[idx], progress);
+          ty = THREE.MathUtils.lerp(cloudPos[idx+1], gridPos[idx+1], progress);
+          tz = THREE.MathUtils.lerp(cloudPos[idx+2], gridPos[idx+2], progress);
+          
+          tx += Math.sin(time + i) * 0.5 * (1 - progress);
+          ty += Math.cos(time + i) * 0.5 * (1 - progress);
+        } else if (scrollPercent < 0.7) {
+          // Mostly Grid, start transitioning to Wave
+          const progress = Math.max(0, (scrollPercent - 0.55) * (1 / 0.15)); // 0 to 1 between 0.55 and 0.7
+          tx = THREE.MathUtils.lerp(gridPos[idx], wavePos[idx], progress);
+          ty = THREE.MathUtils.lerp(gridPos[idx+1], wavePos[idx+1], progress);
+          tz = THREE.MathUtils.lerp(gridPos[idx+2], wavePos[idx+2], progress);
+          
+          ty += Math.sin(time * 2 + gridPos[idx] * 0.01) * 2 * (1 - progress);
+        } else {
+          // Wave
+          const waveT = (i / particleCount) + time * 0.1;
+          const angle = waveT * Math.PI * 20;
+          const radius = 200 + Math.sin(waveT * Math.PI * 4) * 100;
+          
+          tx = Math.cos(angle) * radius;
+          ty = wavePos[idx+1];
+          tz = Math.sin(angle) * radius;
+        }
 
-        // Current position lerping towards target
-        posArray[idx] += (tx - posArray[idx]) * 0.05;
-        posArray[idx+1] += (ty - posArray[idx+1]) * 0.05;
-        posArray[idx+2] += (tz - posArray[idx+2]) * 0.05;
+        // Mouse repulsion
+        const dx = tx - (mouseX * 500);
+        const dy = ty - (-mouseY * 500);
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const repelRadius = 200;
+        
+        if (dist < repelRadius) {
+          const force = (repelRadius - dist) / repelRadius;
+          tx += (dx / dist) * force * 100;
+          ty += (dy / dist) * force * 100;
+        }
 
-        // Wave motion
-        posArray[idx+1] += Math.sin(time * 2 + posArray[idx]) * 0.5;
+        // Smooth interpolation
+        posArray[idx] += (tx - posArray[idx]) * 0.08;
+        posArray[idx+1] += (ty - posArray[idx+1]) * 0.08;
+        posArray[idx+2] += (tz - posArray[idx+2]) * 0.08;
       }
       posAttribute.needsUpdate = true;
 
-      // Mouse interaction (Repel camera slightly)
-      camera.position.x += (mouseX - camera.position.x) * 0.05;
-      camera.position.y += (-mouseY - camera.position.y) * 0.05;
-      camera.lookAt(scene.position);
+      // Camera & System rotation
+      const targetRotY = scrollPercent * Math.PI;
+      const targetRotX = scrollPercent * Math.PI * 0.5;
+      
+      particles.rotation.y += (targetRotY - particles.rotation.y) * 0.05;
+      particles.rotation.x += (targetRotX - particles.rotation.x) * 0.05;
 
-      // Rotate entire system
-      particles.rotation.y = time * 0.1;
-      particles.rotation.x = time * 0.05;
+      camTarget.x = mouseX * 200;
+      camTarget.y = -mouseY * 200;
+      
+      let targetZ = 600;
+      if (scrollPercent > 0.3 && scrollPercent < 0.7) {
+        targetZ = 350; 
+      } else if (scrollPercent >= 0.7) {
+        targetZ = 800; 
+      }
+      camTarget.z = targetZ;
+
+      camera.position.x += (camTarget.x - camera.position.x) * 0.05;
+      camera.position.y += (camTarget.y - camera.position.y) * 0.05;
+      camera.position.z += (camTarget.z - camera.position.z) * 0.05;
+      camera.lookAt(scene.position);
 
       renderer.render(scene, camera);
     };
