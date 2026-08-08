@@ -4,7 +4,7 @@ I build things because I want to know how they work.
 
 Systems, software, hardware, experiments, and occasionally things that probably shouldn't exist.
 
-![Scroll Demo](assets/demo.webp)
+![Scroll Demo](assets/demo.webm)
 
 ---
 
