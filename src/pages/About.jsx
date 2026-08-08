@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Instagram, Mail } from 'lucide-react';
 
 const About = () => {
   return (
@@ -17,13 +16,13 @@ const About = () => {
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center' }}>
           <a href="https://github.com/hazynyx" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)', fontSize: '1.2rem', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--accent-glow)'} onMouseOut={e => e.currentTarget.style.color = 'var(--text-primary)'}>
-            <Github size={24} /> github.com/hazynyx
+            🐙 github.com/hazynyx
           </a>
           <a href="https://instagram.com/hazy__.nyx" target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)', fontSize: '1.2rem', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--accent-glow)'} onMouseOut={e => e.currentTarget.style.color = 'var(--text-primary)'}>
-            <Instagram size={24} /> @hazy__.nyx
+            📸 @hazy__.nyx
           </a>
           <a href="mailto:hazynyx@gmail.com" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-primary)', fontSize: '1.2rem', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--accent-glow)'} onMouseOut={e => e.currentTarget.style.color = 'var(--text-primary)'}>
-            <Mail size={24} /> hazynyx@gmail.com
+            ✉️ hazynyx@gmail.com
           </a>
         </div>
       </div>
